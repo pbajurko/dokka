@@ -517,6 +517,7 @@ fun <T> SourceSetDependent<T>?.orEmpty(): SourceSetDependent<T> = this ?: emptyM
 
 interface DocumentableSource {
     val path: String
+    val lineNumber: Int?
 }
 
 data class TypeConstructorWithKind(val typeConstructor: TypeConstructor, val kind: ClassKind)
