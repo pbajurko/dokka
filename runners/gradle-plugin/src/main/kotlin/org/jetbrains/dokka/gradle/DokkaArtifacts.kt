@@ -8,7 +8,7 @@ internal val Project.dokkaArtifacts get() = DokkaArtifacts(this)
 
 internal class DokkaArtifacts(private val project: Project) {
     private fun fromModuleName(name: String): Dependency =
-        project.dependencies.create("org.jetbrains.dokka:$name:${DokkaVersion.version}")
+        project.dependencies.create("com.github.bajurko.dokka:$name:${DokkaVersion.version}")
 
     val dokkaAnalysis get() = fromModuleName("dokka-analysis")
     val allModulesPage get() = fromModuleName("all-modules-page-plugin")
