@@ -51,11 +51,22 @@ class DefaultExternalModuleLinkResolver(val context: DokkaContext) : ExternalMod
         }
 
     override fun resolve(dri: DRI, fileContext: File): String? {
-        val resolvedLinks = elps.mapNotNull { it.resolve(dri)?.removePrefix("file:") }
+        val resolvedLinks = elps.mapNotNull {
+            val resolved = it.resolve(dri)?.removePrefix("file:")
+            resolved
+        }
         val modulePath = context.configuration.outputDir.absolutePath
         val validLink = resolvedLinks.firstOrNull {
-            val absolutePath = File(modulePath + it)
-            absolutePath.isFile
+            val absolutePath = dri.packageName?.let { packageName ->
+                // Fallback lookup in submodules outputs, since htmlPartial tasks are executed
+                // before htmlMultiModule while processing modules in AllModulesPageGeneration does see to follow
+                // dependency graph?
+                val rootDir = modulePath.removeSuffix("/build/dokka/htmlMultiModule")
+                rootDir + it.substringBefore(packageName) + "build/dokka/htmlPartial/" + packageName + it.substringAfter(
+                    packageName
+                )
+            } ?: modulePath + it
+            File(absolutePath).isFile
         } ?: return null
         val modulePathParts = modulePath.split(File.separator)
         val contextPathParts = fileContext.absolutePath.split(File.separator)

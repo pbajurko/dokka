@@ -16,10 +16,13 @@ class ResolveLinkCommandHandler(context: DokkaContext) : CommandHandler {
     private val externalModuleLinkResolver =
         context.plugin<AllModulesPagePlugin>().querySingle { externalModuleLinkResolver }
 
+    private val logger = context.logger
+
     override fun handleCommandAsTag(command: Command, body: Element, input: File, output: File) {
         command as ResolveLinkCommand
         val link = externalModuleLinkResolver.resolve(command.dri, output)
         if (link == null) {
+            logger.warn("Could not resolve link to ${command.dri}")
             val children = body.childNodes().toList()
             val attributes = Attributes().apply {
                 put("data-unresolved-link", command.dri.toString())
