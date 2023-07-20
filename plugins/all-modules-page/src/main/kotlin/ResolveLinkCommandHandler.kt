@@ -22,7 +22,7 @@ class ResolveLinkCommandHandler(context: DokkaContext) : CommandHandler {
         command as ResolveLinkCommand
         val link = externalModuleLinkResolver.resolve(command.dri, output)
         if (link == null) {
-            logger.warn("Could not resolve link to ${command.dri}")
+            logger.warn("Could not resolve link to ${command.dri} referenced from ${input.absolutePath}")
             val children = body.childNodes().toList()
             val attributes = Attributes().apply {
                 put("data-unresolved-link", command.dri.toString())
